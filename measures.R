@@ -8,7 +8,7 @@ roc_auc_fun <- function(task, model, pred, feats, extra.args) {
   # scikit-learn f1 score
   
   sk$metrics$roc_auc_score(y_true = getPredictionTruth(pred), 
-                           y_score = getPredictionProbabilities(pred), 
+                           y_score = as.matrix(getPredictionProbabilities(pred)), 
                            average = extra.args$average)
 }
 

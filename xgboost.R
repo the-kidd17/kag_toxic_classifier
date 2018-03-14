@@ -44,7 +44,8 @@ vectorizer <- create_vocabulary(it, ngram = c(1, 1), stopwords = stopwords("en")
 
 m_tfidf <- TfIdf$new(norm = "l2", sublinear_tf = T)
 tfidf <- create_dtm(it, vectorizer) %>%
-  fit_transform(m_tfidf)  
+  fit_transform(m_tfidf)
+colnames(tfidf) <- paste0("V", 1:ncol(tfidf))
 
 m_lsa <- LSA$new(n_topics = 25, method = "randomized")
 lsa <- fit_transform(tfidf, m_lsa)
@@ -55,6 +56,10 @@ X <- tr_te %>%
   select(-comment_text) %>% 
   sparse.model.matrix(~ . - 1, .) %>% 
   cbind(tfidf, lsa)
+X_small <- tr_te %>%
+  select(-comment_text) %>% 
+  sparse.model.matrix(~ . - 1, .) %>% 
+  cbind(lsa)
 
 X_test <- X[-tri, ]
 X <- X[tri, ]
